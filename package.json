@@ -1,0 +1,19 @@
+{
+  "name": "grav2nuxt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "to-nuxt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "copyfiles": "^2.4.1",
+    "dayjs": "^1.10.3",
+    "file-birth": "^1.0.0",
+    "json2yaml": "^1.1.0",
+    "parse-md": "^2.0.4"
+  }
+}
