@@ -2,9 +2,10 @@
   "name": "grav2nuxt",
   "version": "1.0.0",
   "description": "",
-  "main": "to-nuxt.js",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node index.js"
   },
   "keywords": [],
   "author": "",
