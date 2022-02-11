@@ -11,6 +11,8 @@ import getDir from "./src/helpers/getDir.js";
 import getImages from "./src/helpers/getImages.js";
 import pathToMap from "./src/helpers/pathToMap.js";
 import createMeta from "./src/helpers/createMeta.js";
+import optiImages from "./src/helpers/optiImages.js"
+import createLqip from "./src/helpers/createLqip.js"
 
 // чистим папку вывода
 fs.rmSync(paths.export.dir, { recursive: true, force: true });
@@ -20,7 +22,6 @@ const sectionsDir = getDir(paths.import.dir)
 	.map(i => pathToMap(i, paths.import.dir))
 	.filter(i => !paths.import.exclude.includes(i.nameDirOut));
 
-
 sectionsDir.forEach(section => {
 	const pagesDir = getDir(section.path).map(i => pathToMap(i, section.path));
 
@@ -29,24 +30,35 @@ sectionsDir.forEach(section => {
 
 	pagesDir.forEach(page => {
 		const imagesPage = getImages(page.path);
+		const dirImagesOut = path.join(paths.export.images, page.nameDirOut);
 		const pathImages = path.join(paths.content.images, page.nameDirOut);
 		const dirPage = path.join(paths.export.pages, section.nameDirOut, `${page.nameDirOut}.md`);
 		const contentPage = fs.readFileSync(path.join(page.path, "page.md"), "utf8");
 		const { metadata, content } = parseMD(contentPage);
-		const metaOut = createMeta(metadata, imagesPage[0]);
+		const poster = metadata?.media_order?.split(',')[0] || imagesPage[0] || false;
+		const metaOut = createMeta(metadata, {
+			img: poster,
+			lqip: "LQIPPER",
+		});
 		const contentOut = content
 			.replace(/(##)([\wА-Яа-я])/g, (whole, a, b) => a + " " + b)// фикс заголовков
 			.replace(/(!\[.*?\]\()(.+?)(\))/g, (whole, a, b, c) => a + `/${pathImages}/` + b.split('?classes')[0] + c); // фикс путей изображений
 		// TODO Незабыть сделать grep для фикса картинок с assets/img/.../http...
 
-		if(imagesPage) {
-			// TODO Сохраняем картинки и сжимаем
-			// console.log(pathImages);
+		if(imagesPage[0]) {
+			fs.mkdirSync(dirImagesOut, { recursive: true });
+			optiImages(path.join(page.path, "**/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}"), dirImagesOut);
+
+			if(metaOut?.data?.img) {
+				fs.mkdirSync(path.join(dirImagesOut, "poster"), { recursive: true });
+				// TODO Создать миниатюру постера
+			}
 		}
 
-		const pageOut = metaOut + contentOut;
+		const pageOut = metaOut.out + contentOut;
 
 		fs.writeFileSync(dirPage, pageOut); // Сохраняем страницу
+		poster && createLqip(path.join(page.path, poster), dirPage); // Создаем lqip
 
 		// console.log(dirPage);
 
