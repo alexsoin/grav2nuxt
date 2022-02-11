@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import birthDate from "file-birth";
 import { stringify } from "json2yaml";
 import parseMD from "parse-md";
+import sharp from 'sharp';
 
 import paths from "./src/paths.js";
 import getDir from "./src/helpers/getDir.js";
@@ -62,7 +63,13 @@ sectionsDir.forEach(section => {
 
 			if(metaOut?.data?.img) {
 				fs.mkdirSync(path.join(dirImagesOut, "poster"), { recursive: true });
-				// TODO Создать миниатюру постера
+
+				sharp(path.join(page.path, metaOut.data.img))
+					.resize(512)
+					.toFile(path.join(dirImagesOut, "poster", "512-"+metaOut.data.img), (err, info) => err && console.log(err));
+				sharp(path.join(page.path, metaOut.data.img))
+					.resize(1920)
+					.toFile(path.join(dirImagesOut, "poster", "1920-"+metaOut.data.img), (err, info) => err && console.log(err));
 			}
 		}
 
