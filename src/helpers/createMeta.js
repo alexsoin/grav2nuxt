@@ -9,6 +9,7 @@ export default function createMeta(meta, options) {
 		longtitle: meta.gtitle || "",
 		description: meta.metadata ? meta.metadata.description : "",
 		published: meta.published,
+		...options,
 	};
 
 	const tags = rexp(metaData.title, /^\[(.*?)\]/g)[1]?.replace(/\s+/g, "").split("|").join(",") || false;
@@ -20,11 +21,8 @@ export default function createMeta(meta, options) {
 		const arrDate = arrDateAndTime[0].split('-');
 		const formatedDate = `${arrDate[2]}-${arrDate[1]}-${arrDate[0]} ${arrDateAndTime[1]}`;
 		metaData.date = dayjs(formatedDate).format('YYYY-MM-DDTHH:mm');
-	}
-
-	if(options.img) {
-		metaData.img = options.img;
-		metaData.lqip = options.lqip;
+	} else {
+		metaData.date = "2020-11-07T16:57";
 	}
 
 	if (meta.metadata && meta.metadata.keywords) {

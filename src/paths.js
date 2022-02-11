@@ -16,5 +16,6 @@ export default {
 	},
 	content: {
 		images: path.join("assets", "img"),
+		favorites: [ "git-commands", "linux-settings", "linux-wsl-in-windows", "first-step-git", "harden-modx-revo", "bash-cribs", "modx-sozdanie-i-upravlenie-svoimi-mysql-tablicami-cherez-obekty"]
 	}
 }

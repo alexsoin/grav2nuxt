@@ -36,10 +36,21 @@ sectionsDir.forEach(section => {
 		const contentPage = fs.readFileSync(path.join(page.path, "page.md"), "utf8");
 		const { metadata, content } = parseMD(contentPage);
 		const poster = metadata?.media_order?.split(',')[0] || imagesPage[0] || false;
-		const metaOut = createMeta(metadata, {
-			img: poster,
-			lqip: "LQIPPER",
-		});
+		const optionsMeta = () => {
+			let mdata = {};
+
+			if(poster) {
+				mdata.img = poster;
+				mdata.lqip = "LQIPPER";
+			}
+
+			if(paths.content.favorites.includes(page.nameDirOut)) {
+				mdata.favorites = true;
+			}
+
+			return mdata;
+		}
+		const metaOut = createMeta(metadata, optionsMeta());
 		const contentOut = content
 			.replace(/(##)([\wА-Яа-я])/g, (whole, a, b) => a + " " + b)// фикс заголовков
 			.replace(/(!\[.*?\]\()(.+?)(\))/g, (whole, a, b, c) => a + `/${pathImages}/` + b.split('?classes')[0] + c); // фикс путей изображений
